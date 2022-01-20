@@ -1,0 +1,239 @@
+    .registers 10
+
+    .line 11000
+    sget-boolean v0, Lcom/android/server/notification/NotificationManagerService;->DBG:Z
+
+    if-eqz v0, :cond_1d
+
+    .line 11001
+    new-instance v0, Ljava/lang/StringBuilder;
+
+    invoke-direct {v0}, Ljava/lang/StringBuilder;-><init>()V
+
+    const-string/jumbo v1, "notification setFlashing delay 15s mNotificationPulseEnabled = "
+
+    invoke-virtual {v0, v1}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    iget-boolean v1, p0, Lcom/android/server/notification/NotificationManagerService;->mNotificationPulseEnabled:Z
+
+    invoke-virtual {v0, v1}, Ljava/lang/StringBuilder;->append(Z)Ljava/lang/StringBuilder;
+
+    invoke-virtual {v0}, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;
+
+    move-result-object v0
+
+    const-string v1, "NotificationService"
+
+    invoke-static {v1, v0}, Landroid/util/Log;->d(Ljava/lang/String;Ljava/lang/String;)I
+
+    .line 11010
+    :cond_1d
+    monitor-enter p0
+
+    .line 11011
+    :try_start_1e
+    invoke-static {}, Landroid/os/Binder;->clearCallingIdentity()J
+
+    move-result-wide v0
+    :try_end_22
+    .catchall {:try_start_1e .. :try_end_22} :catchall_aa
+
+    .line 11014
+    .local v0, "identity":J
+    :try_start_22
+    iget-object v2, p0, Lcom/android/server/notification/NotificationManagerService;->mFlashSender:Landroid/app/PendingIntent;
+
+    if-eqz v2, :cond_34
+
+    .line 11015
+    iget-object v2, p0, Lcom/android/server/notification/NotificationManagerService;->mAlarmManager:Landroid/app/AlarmManager;
+
+    iget-object v3, p0, Lcom/android/server/notification/NotificationManagerService;->mFlashSender:Landroid/app/PendingIntent;
+
+    invoke-virtual {v2, v3}, Landroid/app/AlarmManager;->cancel(Landroid/app/PendingIntent;)V
+
+    .line 11017
+    const-string v2, "LedTest"
+
+    const-string v3, "cancel braodcast"
+
+    invoke-static {v2, v3}, Landroid/util/Log;->i(Ljava/lang/String;Ljava/lang/String;)I
+
+    .line 11020
+    :cond_34
+    invoke-direct {p0}, Lcom/android/server/notification/NotificationManagerService;->isLedDoubleFlash()Z
+
+    move-result v2
+
+    .line 11022
+    .local v2, "ledDoubleFlash":Z
+    const-string v3, "LedTest"
+
+    new-instance v4, Ljava/lang/StringBuilder;
+
+    invoke-direct {v4}, Ljava/lang/StringBuilder;-><init>()V
+
+    const-string/jumbo v5, "ledDoubleFlash = "
+
+    invoke-virtual {v4, v5}, Ljava/lang/StringBuilder;->append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+
+    invoke-virtual {v4, v2}, Ljava/lang/StringBuilder;->append(Z)Ljava/lang/StringBuilder;
+
+    invoke-virtual {v4}, Ljava/lang/StringBuilder;->toString()Ljava/lang/String;
+
+    move-result-object v4
+
+    invoke-static {v3, v4}, Landroid/util/Log;->i(Ljava/lang/String;Ljava/lang/String;)I
+
+    .line 11024
+    iget-boolean v3, p0, Lcom/android/server/notification/NotificationManagerService;->mBreathLightOn:Z
+
+    if-eqz v3, :cond_66
+
+    iget-boolean v3, p0, Lcom/android/server/notification/NotificationManagerService;->mBreathLightOn:Z
+
+    if-eqz v3, :cond_5e
+
+    iget-boolean v3, p0, Lcom/android/server/notification/NotificationManagerService;->mBreathLightDoubleFlashing:Z
+
+    if-nez v3, :cond_5e
+
+    if-eqz v2, :cond_5e
+
+    goto :goto_66
+
+    .line 11039
+    :cond_5e
+    const-string v3, "LedTest"
+
+    const-string v4, "breath light is already flashing, do NOT wakeup again."
+
+    invoke-static {v3, v4}, Landroid/util/Log;->d(Ljava/lang/String;Ljava/lang/String;)I
+
+    goto :goto_9f
+
+    .line 11027
+    :cond_66
+    :goto_66
+    invoke-static {}, Ljava/lang/System;->currentTimeMillis()J
+
+    move-result-wide v3
+
+    const-wide/16 v5, 0x0
+
+    add-long/2addr v3, v5
+
+    .line 11028
+    .local v3, "whenToStartBreath":J
+    new-instance v5, Landroid/content/Intent;
+
+    const-string v6, "com.android.server.notification"
+
+    invoke-direct {v5, v6}, Landroid/content/Intent;-><init>(Ljava/lang/String;)V
+
+    .line 11029
+    .local v5, "intent":Landroid/content/Intent;
+    const-string/jumbo v6, "ledDoubleFlash"
+
+    invoke-virtual {v5, v6, v2}, Landroid/content/Intent;->putExtra(Ljava/lang/String;Z)Landroid/content/Intent;
+
+    .line 11031
+    invoke-virtual {p0}, Lcom/android/server/notification/NotificationManagerService;->getContext()Landroid/content/Context;
+
+    move-result-object v6
+
+    const/high16 v7, 0x10000000
+
+    const/4 v8, 0x0
+
+    invoke-static {v6, v8, v5, v7}, Landroid/app/PendingIntent;->getBroadcast(Landroid/content/Context;ILandroid/content/Intent;I)Landroid/app/PendingIntent;
+
+    move-result-object v6
+
+    .line 11033
+    .local v6, "sender":Landroid/app/PendingIntent;
+    iget-object v7, p0, Lcom/android/server/notification/NotificationManagerService;->mAlarmManager:Landroid/app/AlarmManager;
+
+    invoke-virtual {v7, v8, v3, v4, v6}, Landroid/app/AlarmManager;->set(IJLandroid/app/PendingIntent;)V
+
+    .line 11034
+    iput-object v6, p0, Lcom/android/server/notification/NotificationManagerService;->mFlashSender:Landroid/app/PendingIntent;
+
+    .line 11036
+    const-string v7, "LedTest"
+
+    const-string v8, "breath light broadcast send!"
+
+    invoke-static {v7, v8}, Landroid/util/Log;->d(Ljava/lang/String;Ljava/lang/String;)I
+    :try_end_93
+    .catch Ljava/lang/Exception; {:try_start_22 .. :try_end_93} :catch_97
+    .catchall {:try_start_22 .. :try_end_93} :catchall_95
+
+    .line 11037
+    nop
+
+    .end local v3  # "whenToStartBreath":J
+    .end local v5  # "intent":Landroid/content/Intent;
+    .end local v6  # "sender":Landroid/app/PendingIntent;
+    goto :goto_9f
+
+    .line 11045
+    .end local v2  # "ledDoubleFlash":Z
+    :catchall_95
+    move-exception v2
+
+    goto :goto_a5
+
+    .line 11041
+    :catch_97
+    move-exception v2
+
+    .line 11043
+    .local v2, "e":Ljava/lang/Exception;
+    :try_start_98
+    const-string v3, "LedTest"
+
+    const-string v4, "breath light broadcast send failed..."
+
+    invoke-static {v3, v4}, Landroid/util/Log;->d(Ljava/lang/String;Ljava/lang/String;)I
+    :try_end_9f
+    .catchall {:try_start_98 .. :try_end_9f} :catchall_95
+
+    .line 11045
+    .end local v2  # "e":Ljava/lang/Exception;
+    :goto_9f
+    :try_start_9f
+    invoke-static {v0, v1}, Landroid/os/Binder;->restoreCallingIdentity(J)V
+
+    .line 11046
+    nop
+
+    .line 11047
+    .end local v0  # "identity":J
+    monitor-exit p0
+
+    .line 11049
+    return-void
+
+    .line 11045
+    .restart local v0  # "identity":J
+    :goto_a5
+    invoke-static {v0, v1}, Landroid/os/Binder;->restoreCallingIdentity(J)V
+
+    .line 11046
+    nop
+
+    .end local p0  # "this":Lcom/android/server/notification/NotificationManagerService;
+    throw v2
+
+    .line 11047
+    .end local v0  # "identity":J
+    .restart local p0  # "this":Lcom/android/server/notification/NotificationManagerService;
+    :catchall_aa
+    move-exception v0
+
+    monitor-exit p0
+    :try_end_ac
+    .catchall {:try_start_9f .. :try_end_ac} :catchall_aa
+
+    throw v0

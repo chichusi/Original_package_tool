@@ -1,0 +1,54 @@
+    .registers 6
+
+    .line 10989
+    const/4 v0, 0x1
+
+    .line 10990
+    .local v0, "ledDoubleFlash":Z
+    iget-object v1, p0, Lcom/android/server/notification/NotificationManagerService;->mLights:Ljava/util/ArrayList;
+
+    invoke-virtual {v1}, Ljava/util/ArrayList;->iterator()Ljava/util/Iterator;
+
+    move-result-object v1
+
+    :goto_7
+    invoke-interface {v1}, Ljava/util/Iterator;->hasNext()Z
+
+    move-result v2
+
+    if-eqz v2, :cond_1f
+
+    invoke-interface {v1}, Ljava/util/Iterator;->next()Ljava/lang/Object;
+
+    move-result-object v2
+
+    check-cast v2, Ljava/lang/String;
+
+    .line 10991
+    .local v2, "r":Ljava/lang/String;
+    const-string v3, "breathLightDoubleFlash"
+
+    invoke-virtual {v2, v3}, Ljava/lang/String;->indexOf(Ljava/lang/String;)I
+
+    move-result v3
+
+    const/4 v4, -0x1
+
+    if-eq v3, v4, :cond_1e
+
+    .line 10992
+    const/4 v0, 0x1
+
+    .line 10993
+    goto :goto_1f
+
+    .line 10995
+    .end local v2  # "r":Ljava/lang/String;
+    :cond_1e
+    goto :goto_7
+
+    .line 10996
+    :cond_1f
+    :goto_1f
+    return v0
+

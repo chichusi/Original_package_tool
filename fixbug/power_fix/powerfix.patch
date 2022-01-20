@@ -1,0 +1,9 @@
+    .registers 5
+    .param p0, "context"  # Landroid/content/Context;
+    .param p1, "targetUserId"  # I
+
+    .line 52
+    const/4 v0, 0x0
+
+    return v0
+
