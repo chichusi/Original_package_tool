@@ -38,10 +38,4 @@ $bin/oat2dex/rm.sh
 
 true > ./make/add_etc_vintf_patch/manifest_custom
 echo "" >> ./make/add_etc_vintf_patch/manifest_custom
-echo "<!-- oem自定义接口 -->" >> ./make/add_etc_vintf_patch/manifest_custom
-
-true > ./make/add_build/add_oem_build
-echo "" >> ./make/add_build/add_oem_build
-echo "# oem厂商自定义属性" >> ./make/add_build/add_oem_build
-
 echo "工具环境清理完成"

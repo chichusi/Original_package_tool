@@ -27,7 +27,7 @@ case $1 in
 esac
 
 rm -rf ./out
-rm -rf ./SGSI
+rm -rf ./X
 mkdir ./out
 
 if [ -e ./vendor.img ];then
@@ -86,10 +86,7 @@ function normal() {
     sed -i 's/ro.sf.lcd/#&/' $systemdir/build.prop
     sed -i 's/ro.sf.lcd/#&/' $systemdir/product/build.prop
     sed -i 's/ro.sf.lcd/#&/' $systemdir/system_ext/build.prop
-   
-  # 添加缺少的libs
-  cp -frpn ./make/add_libs/system/* $systemdir
- 
+    
      # 为所有rom禁用product vndk version
     sed -i '/product.vndk.version/d' $systemdir/product/build.prop
 

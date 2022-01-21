@@ -98,18 +98,18 @@ esac
 
 if [ -s ./out/system.img ];then
   echo "打包完成"
-  echo "输出至SGSI文件夹"
+  echo "输出至X文件夹"
 else
   echo "打包失败，错误日志如上"
 fi
 
 if [ -s ./out/system.img ];then
-  rm -rf ./SGSI
-  mkdir ./SGSI
-  mv ./out/system.img ./SGSI/
+  rm -rf ./X
+  mkdir ./X
+  mv ./out/system.img ./X/
   cp -frp ./out/system/system/build.prop ./out/
-  ./get_build_info.sh "./out" "$LOCALDIR/SGSI/system.img" > ./SGSI/build_info.txt
+  ./get_build_info.sh "./out" "$LOCALDIR/X/system.img" > ./X/build_info.txt
   rm -rf ./out/build.prop
   ./copy.sh
-  chmod -R 777 ./SGSI
+  chmod -R 777 ./X
 fi

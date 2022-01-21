@@ -26,6 +26,7 @@ dependency_install(){
         sudo apt update && sudo apt upgrade -y
         sudo apt install git p7zip openjdk-8-jdk curl cpio wget unace unrar zip unzip p7zip-full p7zip-rar sharutils uudeview mpack arj cabextract file-roller aptitude device-tree-compiler liblzma-dev liblz4-tool gawk aria2 selinux-utils busybox -y
         sudo apt update --fix-missing
+        sudo apt install git cpio aria2 brotli android-sdk-libsparse-utils openjdk-11-jre p7zip-full -y 
         
     elif [[ "$OSTYPE" == "darwin"* ]]; then
         echo -e "\033[33m [DEBUG] macOS Detected \033[0m"
