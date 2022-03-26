@@ -97,6 +97,10 @@ case $system_type in
 esac
 
 if [ -s ./out/system.img ];then
+  echo "正在去除空闲块"
+  e2fsck -fp "out/system.img" | awk '{print $6}' | cut -d '/' -f 1 > log.txt
+  resize2fs -f "out/system.img" "$(cat log.txt)"
+  rm -rf ./log.txt
   echo "打包完成"
   echo "输出至X文件夹"
 else

@@ -81,23 +81,7 @@ function normal() {
     sed -i '/persist/d' $systemdir/system_ext/etc/selinux/system_ext_property_contexts
     sed -i '/oem/d' $systemdir/system_ext/etc/selinux/system_ext_property_contexts
   fi
-  
-    # 为所有rom改用分辨率自适应
-    sed -i 's/ro.sf.lcd/#&/' $systemdir/build.prop
-    sed -i 's/ro.sf.lcd/#&/' $systemdir/product/build.prop
-    sed -i 's/ro.sf.lcd/#&/' $systemdir/system_ext/build.prop
-    
-     # 为所有rom禁用product vndk version
-    sed -i '/product.vndk.version/d' $systemdir/product/build.prop
-
-    # 为所有rom禁用caf media.setting
-    sed -i '/media.settings.xml/d' $systemdir/build.prop
-
-    # 为所有rom改用自适应apex更新支持状态
-    sed -i '/ro.apex.updatable/d' $systemdir/build.prop
-    sed -i '/ro.apex.updatable/d' $systemdir/product/build.prop
-    sed -i '/ro.apex.updatable/d' $systemdir/system_ext/build.prop
- 
+   
   # 为所有rom还原fstab.postinstall
   find  ./out/system/ -type f -name "fstab.postinstall" | xargs rm -rf
   cp -frp ./make/fstab/system/* $systemdir
@@ -266,8 +250,6 @@ function dynamic() {
     sed -i 's#system_ext #system/system/system_ext #g' ./make/add_dynamic_fs/system_ext_fs
     sed -i 's#system_ext/#system/system/system_ext/#g' ./make/add_dynamic_fs/system_ext_fs
  
-    # lib_fs
-    sed -i 's#system_ext/#system/system/system_ext/#g' ./make/add_dynamic_fs/system_ext_lib_fs
 
     # symlink_fs
     sed -i 's#/system_ext/#/system/system_ext/#g' ./make/add_dynamic_fs/system_ext_symlink_fs
@@ -306,9 +288,6 @@ function dynamic() {
     # fs
     sed -i 's#product #system/system/product #g' ./make/add_dynamic_fs/product_fs
     sed -i 's#product/#system/system/product/#g' ./make/add_dynamic_fs/product_fs
- 
-    # lib_fs
-    sed -i 's#product/#system/system/product/#g' ./make/add_dynamic_fs/product_lib_fs
 
     # symlink_fs
     sed -i 's#/product/#/system/product/#g' ./make/add_dynamic_fs/product_symlink_fs
@@ -485,6 +464,7 @@ rm -rf ./out/system/system/app/NQNfcNci/
         exit
         ;;
 esac
+
 echo "下面是Flyme9.2的修复 其他系统不通用"
 #是否启用指纹功耗修复并移除屏幕指纹特性
   read -p "是否启用指纹功耗修复并移除屏幕指纹特性(y/n): " TouchID
@@ -546,6 +526,53 @@ echo "下面是Flyme9.2的修复 其他系统不通用"
       exit
       ;;        
   esac
+  echo "下面是MIUI破解卡米 其他系统不通用"
+#破解卡米
+read -p "是否破解MIUI卡米(y/n): " MIUIService
+  case $MIUIService in
+    "y") 
+      echo "开始破解MIUI卡米"
+      cd $LOCALDIR
+      mkdir temp
+      cp $(find ./out/system/ -type f -name 'services.jar') ./temp
+      7z x ./temp/services.jar class* otemp/services >/dev/null 2>&1
+      echo  "反编译：services/classes.dex"
+      java -jar tool_bin/baksmali.jar disassemble ./temp/services/classes.dex -o ./temp/services
+      if [[ -f "temp/services/classes2.dex" ]]; then
+        echo  "反编译：services/classes2.dex"
+        java -jar tool_bin/baksmali.jar disassemble ./temp/services/classes2.dex -o ./temp/services2
+      fi
+      rm -rf temp/services/classes.dex temp/services/classes2.dex >/dev/null 2>&1
+      checkf=$(find temp/servi*/ -type f -name '*.smali' 2>/dev/null | xargs grep -rl '.method private checkSystemSelfProtection(Z)V' | sed 's/^\.\///' | sort)
+      sed -i '/^.method private checkSystemSelfProtection(Z)V/,/^.end method/{//!d}' $checkf
+      sed -i -e '/^.method private checkSystemSelfProtection(Z)V/a\    .locals 1\n\n    return-void' $checkf
+      mkdir -p ./temp/classes/services
+      echo  "回编译：services/classes.dex"
+      java -jar tool_bin/smali.jar assemble ./temp/services -o ./temp/classes/services/classes.dex
+      if [[ -d "temp/services2" ]]; then
+        echo  "回编译：services/classes2.dex"
+        java -jar tool_bin/smali.jar assemble ./temp/services2 -o ./temp/classes/services/classes2.dex
+      fi
+      7z a ./temp/services.jar ./temp/classes/services/* >/dev/null 2>&1
+      if [[ -f ./temp/services.jar ]]; then
+        rm -rf $(find ./out/system/ -type f -name 'services.jar') >/dev/null 2>&1
+        cp -frp ./temp/services.jar $systemdir/framework/
+      else
+        clear
+        echo "破解失败，恢复原文件"
+      fi
+      cd $LOCALDIR
+      ;;
+    "n")
+      echo "跳过破解"
+      ;;
+    *)
+      echo "error！"
+      exit
+      ;;  
+  esac
+  
+
 }
 
 
@@ -579,19 +606,19 @@ fi
 
 if [ -L $systemdir/vendor ];then
   echo "当前为正常pt 启用正常处理方案"
-  echo "SGSI化处理开始"
+  echo "原包化处理开始"
   case $make_type in
     "A"|"a")  
       normal
       make_Aonly
-      echo "SGSI化处理完成"
+      echo "原包化处理完成"
       fix_bug
       ./makeimg.sh "A"
       exit
       ;;
     "AB"|"ab")
       normal
-      echo "SGSI化处理完成"
+      echo "原包化处理完成"
       fix_bug  
       ./makeimg.sh "AB"
       exit

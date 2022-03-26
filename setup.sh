@@ -27,6 +27,7 @@ dependency_install(){
         sudo apt install git p7zip openjdk-8-jdk curl cpio wget unace unrar zip unzip p7zip-full p7zip-rar sharutils uudeview mpack arj cabextract file-roller aptitude device-tree-compiler liblzma-dev liblz4-tool gawk aria2 selinux-utils busybox -y
         sudo apt update --fix-missing
         sudo apt install git cpio aria2 brotli android-sdk-libsparse-utils openjdk-11-jre p7zip-full -y 
+        sudo apt install bc
         
     elif [[ "$OSTYPE" == "darwin"* ]]; then
         echo -e "\033[33m [DEBUG] macOS Detected \033[0m"
@@ -38,11 +39,11 @@ dependency_install(){
 python_install(){
         echo -e "\033[33m [INFO] Python and Pip install... \033[0m"
         sudo apt-get --purge remove -y python3-pip
-        sudo apt install python aptitude -y
         sudo aptitude install python-dev -y
         sudo add-apt-repository universe
         sudo python get-pip.py
         sudo apt install python3 python3-pip -y
+        sudo apt install bc
 }
 
 pip_module_install(){

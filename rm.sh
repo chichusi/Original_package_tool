@@ -7,9 +7,9 @@ source ./bin.sh
 chmod -R 777 ./
 rm -rf ./new_dat
 rm -rf ./boot
-rm -rf ./out
+rm -rf ./out/*
 rm -rf ./super
-rm -rf ./SGSI
+rm -rf ./X/*
 rm -rf ./images
 rm -rf ./dtbo
 rm -rf ./tmp/*
